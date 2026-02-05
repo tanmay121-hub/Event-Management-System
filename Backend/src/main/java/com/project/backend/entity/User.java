@@ -1,26 +1,33 @@
 package com.project.backend.entity;
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
 @Entity
-@Table(name = "user")
+@Table(
+        name = "users",
+        uniqueConstraints = @UniqueConstraint(columnNames = "email"),
+        indexes = {
+                @Index(name = "idx_users_email", columnList = "email"),
+                @Index(name = "idx_users_role", columnList = "role")
+        }
+)
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class user {
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
-    @Column(nullable = false,length = 100)
-    private String firstName;
+    @Column(nullable = false, length = 100)
+    private String fullName;
 
-    @Column(nullable = false,length = 150,unique = true)
+    @Column(nullable = false, length = 150, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -29,6 +36,12 @@ public class user {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private Role role;
+
+    @Column(nullable = false)
+    private boolean enabled = true;
+
+    @Column(nullable = false)
+    private boolean deleted = false;   // soft delete
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -1,4 +1,7 @@
 package com.project.backend.entity;
 
-public class Role {
+public enum Role {
+    ADMIN,
+    ORGANIZER,
+    PARTICIPANT
 }
