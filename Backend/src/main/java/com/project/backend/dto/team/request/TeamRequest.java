@@ -1,5 +1,5 @@
 package com.project.backend.dto.admin.request;
 
-public class request {
+public class TeamRequest {
     
 }
