@@ -1,11 +1,14 @@
 package com.project.backend.entity;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(
         name = "users",
@@ -15,9 +18,6 @@ import java.time.LocalDateTime;
                 @Index(name = "idx_users_role", columnList = "role")
         }
 )
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
 
     @Id
@@ -40,8 +40,9 @@ public class User {
     @Column(nullable = false)
     private boolean enabled = true;
 
+    // Soft delete
     @Column(nullable = false)
-    private boolean deleted = false;   // soft delete
+    private boolean deleted = false;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -49,6 +50,7 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    // Auto timestamps
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
