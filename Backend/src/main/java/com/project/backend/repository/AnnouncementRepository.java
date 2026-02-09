@@ -1,4 +1,12 @@
 package com.project.backend.repository;
 
-public class AnnouncementRepository {
+import com.project.backend.entity.Announcement;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface AnnouncementRepository
+        extends JpaRepository<Announcement, Long> {
+
+    List<Announcement> findByEventIdOrderByCreatedAtDesc(Long eventId);
 }

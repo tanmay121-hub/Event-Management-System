@@ -8,14 +8,13 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-
 @Component
 public class JwtTokenProvider {
 
     private final Key key;
 
     @Value("${jwt.expiration}")
-    private long jwtExpirationMs;
+    private long expiration;
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secret) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
@@ -27,12 +26,15 @@ public class JwtTokenProvider {
                 .setSubject(email)
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + expiration)
+                )
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String getEmailFromToken(String token) {
+
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -42,12 +44,15 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
+
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
+
             return true;
+
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }

@@ -1,4 +1,4 @@
-package com.project.backend.dto.admin.request;
+package com.project.backend.dto.user.request;
 
 public class UserRequest {
     

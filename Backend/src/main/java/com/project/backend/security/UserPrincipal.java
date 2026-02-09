@@ -1,6 +1,4 @@
 package com.project.backend.security;
-
-
 import com.project.backend.entity.Role;
 import com.project.backend.entity.User;
 import lombok.Getter;
