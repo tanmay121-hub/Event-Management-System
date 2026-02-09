@@ -39,27 +39,43 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         JwtAuthenticationFilter jwtFilter =
-                new JwtAuthenticationFilter(
-                        tokenProvider,
-                        userDetailsService
-                );
+                new JwtAuthenticationFilter(tokenProvider, userDetailsService);
 
         http
                 .csrf(csrf -> csrf.disable())
-
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+
+                        /* ---------- PUBLIC ---------- */
+                        .requestMatchers(
+                                "/api/v1/auth/**",
+                                "/api/v1/events/public/**"
+                        ).permitAll()
+
+                        /* ---------- ADMIN ---------- */
+                        .requestMatchers("/api/v1/admin/**")
+                        .hasRole("ADMIN")
+
+                        /* ---------- ORGANIZER ---------- */
+                        .requestMatchers(
+                                "/api/v1/events/**",
+                                "/api/v1/announcements/**",
+                                "/api/v1/attendance/**"
+                        ).hasAnyRole("ADMIN", "ORGANIZER")
+
+                        /* ---------- PARTICIPANT ---------- */
+                        .requestMatchers(
+                                "/api/v1/registrations/**",
+                                "/api/v1/teams/**",
+                                "/api/v1/user/**"
+                        ).hasAnyRole("PARTICIPANT", "ADMIN")
+
+                        /* ---------- EVERYTHING ELSE ---------- */
                         .anyRequest().authenticated()
                 )
-
-                .addFilterBefore(
-                        jwtFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

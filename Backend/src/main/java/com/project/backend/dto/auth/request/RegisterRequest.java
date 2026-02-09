@@ -1,4 +1,5 @@
 package com.project.backend.dto.auth.request;
+import com.project.backend.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,4 +21,6 @@ public class RegisterRequest {
 
     @Size(min = 6, message = "Password min 6 chars")
     private String password;
+
+    private Role role;
 }
