@@ -7,16 +7,14 @@ export default function AdminUsers() {
   useEffect(() => {
     API.get("/admin/users")
       .then((res) => setUsers(res.data))
-      .catch(() =>
-        alert("Admin access denied."),
-      );
+      .catch(() => alert("Admin access denied."));
   }, []);
 
   async function toggleUser(id, currentStatus) {
     try {
       await API.post(`/admin/users/${id}/status`, null, {
-      params: { enabled: !currentStatus }
-    });
+        params: { enabled: !currentStatus },
+      });
       setUsers(
         users.map((u) => (u.id === id ? { ...u, enabled: !currentStatus } : u)),
       );
@@ -29,10 +27,7 @@ export default function AdminUsers() {
       <h2>Admin: User Management</h2>
 
       {users.map((user) => (
-        <div
-          key={user.id}
-          style={{ border: "1px solid gray", margin: "8px", padding: "8px" }}
-        >
+        <div key={user.id}>
           <p>
             <strong>Email:</strong> {user.email}
           </p>

@@ -24,9 +24,9 @@ function EventDashboard() {
     try {
       const response = await API.post(`/events/${id}/publish`);
 
-      setEvents(events.map(event =>
-        event.id === id ? response.data : event
-      ));
+      setEvents(
+        events.map((event) => (event.id === id ? response.data : event)),
+      );
     } catch (error) {
       console.error("Publish failed", error);
       alert("Failed to publish event");
@@ -37,9 +37,9 @@ function EventDashboard() {
     try {
       const response = await API.post(`/events/${id}/close`);
 
-      setEvents(events.map(event =>
-        event.id === id ? response.data : event
-      ));
+      setEvents(
+        events.map((event) => (event.id === id ? response.data : event)),
+      );
     } catch (error) {
       console.error("Close failed", error);
       alert("Failed to close event");
@@ -54,27 +54,25 @@ function EventDashboard() {
 
       {events.length === 0 && <p>No events found.</p>}
 
-      {events.map(event => (
+      {events.map((event) => (
         <div
           key={event.id}
           style={{
             border: "1px solid #ccc",
             padding: "15px",
             marginBottom: "15px",
-            borderRadius: "8px"
+            borderRadius: "8px",
           }}
         >
           <h3>{event.title}</h3>
-          <p>Status: <strong>{event.status}</strong></p>
+          <p>
+            Status: <strong>{event.status}</strong>
+          </p>
 
-          {/* Show Publish button if DRAFT */}
           {event.status === "DRAFT" && (
-            <button onClick={() => handlePublish(event.id)}>
-              Publish
-            </button>
+            <button onClick={() => handlePublish(event.id)}>Publish</button>
           )}
 
-          {/* Show Close button if PUBLISHED */}
           {event.status === "PUBLISHED" && (
             <button
               onClick={() => handleClose(event.id)}

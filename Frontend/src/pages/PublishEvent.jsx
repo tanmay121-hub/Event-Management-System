@@ -7,7 +7,7 @@ export default function PublishEvent() {
   async function handlePublish() {
     try {
       await API.post(`/events/${eventId}/publish`);
-      alert("Published. Pretend this was your idea.");
+      alert("Published.");
     } catch {
       alert("Failed. Backend ghosted you.");
     }

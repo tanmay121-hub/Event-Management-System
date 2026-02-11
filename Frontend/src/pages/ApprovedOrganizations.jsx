@@ -15,10 +15,7 @@ export default function ApprovedOrganizations() {
       <h2>Approved Organizations</h2>
 
       {orgs.map((o) => (
-        <div
-          key={o.id}
-          style={{ border: "1px solid gray", margin: "8px", padding: "8px" }}
-        >
+        <div key={o.id}>
           <h4>{o.name}</h4>
           <p>{o.description}</p>
           <small>Status: {o.status}</small>

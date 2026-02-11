@@ -1,9 +1,11 @@
 import { useState } from "react";
 import API from "../api";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateOrganization() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -14,9 +16,9 @@ export default function CreateOrganization() {
         description,
       });
 
-      alert("Organization created. Now you wait for admin judgment.");
+      alert("Organization created. Now wait for admin to Accept");
     } catch {
-      alert("Creation failed. Bureaucracy already started.");
+      alert("Creation failed.");
     }
   }
 
@@ -24,7 +26,7 @@ export default function CreateOrganization() {
     <div>
       <h2>Create Organization</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form>
         <input
           placeholder="Organization Name"
           onChange={(e) => setName(e.target.value)}
@@ -37,7 +39,8 @@ export default function CreateOrganization() {
         />
         <br />
 
-        <button>Create</button>
+        <button onClick={handleSubmit}>Create</button>
+        <button onClick={() => navigate("/dashboard")}>Profile</button>
       </form>
     </div>
   );

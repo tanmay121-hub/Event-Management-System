@@ -10,7 +10,7 @@ export default function ViewAnnouncements() {
       const res = await API.get(`/announcements/event/${eventId}`);
       setAnnouncements(res.data);
     } catch {
-      alert("No announcements, or your backend is napping.");
+      alert("No announcements.");
     }
   }
 
