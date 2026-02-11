@@ -11,11 +11,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
+//This filter intercepts every incoming HTTP request once per request
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
+    // Responsible for generating and validating JWT tokens
     private final JwtTokenProvider tokenProvider;
+
     private final CustomUserDetailsService userDetailsService;
 
     public JwtAuthenticationFilter(JwtTokenProvider tokenProvider,
