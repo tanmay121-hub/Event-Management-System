@@ -1,5 +1,6 @@
 package com.project.backend.controller.auth;
 import com.project.backend.dto.auth.request.LoginRequest;
+import com.project.backend.dto.auth.request.RefreshRequest;
 import com.project.backend.dto.auth.request.RegisterRequest;
 import com.project.backend.dto.auth.response.AuthResponse;
 import com.project.backend.service.auth.AuthService;
@@ -34,5 +35,10 @@ public class AuthController {
         @PostMapping("/logout")
         public ResponseEntity<String> logout() {
             return ResponseEntity.ok("Logged out successfully");
+        }
+
+        @PostMapping("/refresh")
+        public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest request) {
+            return ResponseEntity.ok(authService.refreshToken(request.getRefreshToken()));
         }
 }

@@ -34,10 +34,11 @@ public class AnnouncementController {
     // Participants: View by Event
     @GetMapping("/event/{eventId}")
     public ResponseEntity<List<AnnouncementResponse>> getByEvent(
-            @PathVariable Long eventId) {
+            @PathVariable Long eventId,
+            Authentication auth) {
 
         return ResponseEntity.ok(
-                announcementService.getByEvent(eventId)
+                announcementService.getByEvent(eventId, auth.getName())
         );
     }
 }

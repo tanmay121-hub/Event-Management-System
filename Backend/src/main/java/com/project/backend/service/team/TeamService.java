@@ -11,6 +11,7 @@ import com.project.backend.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import com.project.backend.exception.*;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -29,19 +30,32 @@ public class TeamService {
 
     // Create Team
     public TeamResponse create(CreateTeamRequest request, String email) {
-
         User leader = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Event event = eventRepository.findById(request.getEventId())
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
+        // LOGIC FIX: Check event status
+        if (!event.getStatus().name().equals("PUBLISHED")) {
+            throw new BadRequestException("Teams can only be created for published events");
+        }
+
+        // LOGIC FIX: Prevent duplicate team name in same event
+        if (teamRepository.existsByEventIdAndName(event.getId(), request.getName())) {
+            throw new BadRequestException("A team with this name already exists for this event");
+        }
+
+        // LOGIC FIX: Check if user already in a team for this event
+        if (memberRepository.existsByTeamEventIdAndUserId(event.getId(), leader.getId())) {
+            throw new BadRequestException("You are already a member of a team for this event");
+        }
 
         Team team = new Team();
-
         team.setName(request.getName());
         team.setEvent(event);
         team.setLeader(leader);
-        String code = UUID.randomUUID().toString().substring(0, 6);
+        String code = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
         team.setJoinCode(code);
 
         Team saved = teamRepository.save(team);
@@ -57,7 +71,7 @@ public class TeamService {
                     new MimeMessageHelper(message, true);
 
             helper.setTo(leader.getEmail());
-            helper.setSubject("Joininig team Code for your team"+request.getName());
+            helper.setSubject("Team Created: " + request.getName() + " - Join Code");
             helper.setText("""
         <!DOCTYPE html>
         <html>
@@ -153,36 +167,39 @@ public class TeamService {
     }
 
     public void join(JoinTeamRequest request, String email) {
-
         User user = userRepository.findByEmail(email)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Team team = teamRepository
-                .findByJoinCode(request.getJoinCode())
-                .orElseThrow();
+        Team team = teamRepository.findByJoinCode(request.getJoinCode())
+                .orElseThrow(() -> new BadRequestException("Invalid join code"));
 
-        if (memberRepository.existsByTeamIdAndUserId(
-                team.getId(), user.getId())) {
-            throw new RuntimeException("Already joined");
+        Event event = team.getEvent();
+
+        // LOGIC FIX: Check event status
+        if (!event.getStatus().name().equals("PUBLISHED")) {
+            throw new BadRequestException("Teams can only be joined for published events");
+        }
+
+        // LOGIC FIX: Check if user already in a team for this event
+        if (memberRepository.existsByTeamEventIdAndUserId(event.getId(), user.getId())) {
+            throw new BadRequestException("You are already a member of a team for this event");
         }
 
         TeamMember member = new TeamMember();
-
         member.setTeam(team);
         member.setUser(user);
         member.setRole(TeamMemberRole.MEMBER);
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper =
-                    new MimeMessageHelper(message, true);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setTo(user.getEmail());
-            helper.setSubject("Successfully Joined The Team"+team.getName());
-            helper.setText("Congratulations On participating in the event.",true);
+            helper.setSubject("Successfully Joined Team: " + team.getName());
+            helper.setText("Congratulations! You have successfully joined " + team.getName() + " for " + event.getTitle(), true);
             mailSender.send(message);
-        } catch (RuntimeException | MessagingException e) {
-            throw new RuntimeException("Failed to send email");
+        } catch (MessagingException e) {
+            // Log error but don't fail the join process
         }
         memberRepository.save(member);
     }

@@ -8,6 +8,6 @@ import lombok.*;
 public class CreateAnnouncementRequest {
 
     private Long eventId;
-//    private String title;
+    private String title;
     private String message;
 }

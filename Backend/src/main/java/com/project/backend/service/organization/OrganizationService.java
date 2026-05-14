@@ -7,6 +7,7 @@ import com.project.backend.entity.OrganizationStatus;
 import com.project.backend.entity.User;
 import com.project.backend.repository.OrganizationRepository;
 import com.project.backend.repository.UserRepository;
+import com.project.backend.exception.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,15 +26,13 @@ public class OrganizationService {
     }
 
     // Create Organization
-    public OrganizationResponse create(CreateOrganizationRequest request,
-                                       String email) {
-
+    public OrganizationResponse create(CreateOrganizationRequest request, String email) {
         if (organizationRepository.existsByName(request.getName())) {
-            throw new RuntimeException("Organization already exists");
+            throw new BadRequestException("Organization name already taken");
         }
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Organization org = new Organization();
 
@@ -48,25 +47,52 @@ public class OrganizationService {
         return mapToResponse(org);
     }
 
-    // Approve / Reject
-    public OrganizationResponse updateStatus(Long id,
-                                             OrganizationStatus status) {
+    // Approve / Reject (Admin Only)
+    public OrganizationResponse updateStatus(Long id, OrganizationStatus status, String adminEmail) {
+        User admin = userRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
+        
+        if (!admin.getRole().name().equals("ADMIN")) {
+            throw new ForbiddenException("Only administrators can approve/reject organizations");
+        }
 
         Organization org = organizationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Organization not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Organization not found"));
 
         org.setStatus(status);
 
-        organizationRepository.save(org);
+        // LOGIC FIX: Automatic Role Promotion
+        if (status == OrganizationStatus.APPROVED) {
+            User creator = org.getCreatedBy();
+            if (creator.getRole() == com.project.backend.entity.Role.PARTICIPANT) {
+                creator.setRole(com.project.backend.entity.Role.ORGANIZER);
+                userRepository.save(creator);
+            }
+        }
 
+        organizationRepository.save(org);
         return mapToResponse(org);
     }
 
     // Get Approved Organizations
     public List<OrganizationResponse> getApproved() {
-
         return organizationRepository
                 .findByStatus(OrganizationStatus.APPROVED)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // Get All Organizations (Admin Only)
+    public List<OrganizationResponse> getAll(String adminEmail) {
+        User admin = userRepository.findByEmail(adminEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Admin not found"));
+        
+        if (!admin.getRole().name().equals("ADMIN")) {
+            throw new ForbiddenException("Only administrators can view the full organization directory");
+        }
+
+        return organizationRepository.findAll()
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());

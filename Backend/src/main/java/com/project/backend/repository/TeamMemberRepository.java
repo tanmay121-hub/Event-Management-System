@@ -12,4 +12,6 @@ public interface TeamMemberRepository
     boolean existsByTeamIdAndUserId(Long teamId, Long userId);
 
     List<TeamMember> findByTeamId(Long teamId);
+
+    boolean existsByTeamEventIdAndUserId(Long eventId, Long userId);
 }

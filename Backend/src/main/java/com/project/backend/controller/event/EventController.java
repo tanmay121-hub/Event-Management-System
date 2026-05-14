@@ -35,18 +35,22 @@ public class EventController {
 
 
     @PostMapping("/{id}/publish")
-    public ResponseEntity<EventResponse> publish(@PathVariable Long id) {
+    public ResponseEntity<EventResponse> publish(
+            @PathVariable Long id,
+            Authentication authentication) {
 
         return ResponseEntity.ok(
-                eventService.publish(id)
+                eventService.publish(id, authentication.getName())
         );
     }
 
     @PostMapping("/{id}/close")
-    public ResponseEntity<EventResponse> close(@PathVariable Long id) {
+    public ResponseEntity<EventResponse> close(
+            @PathVariable Long id,
+            Authentication authentication) {
 
         return ResponseEntity.ok(
-                eventService.closeRegistration(id)
+                eventService.closeRegistration(id, authentication.getName())
         );
     }
 

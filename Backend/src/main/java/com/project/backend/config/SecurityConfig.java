@@ -101,12 +101,12 @@ public class SecurityConfig {
                                 "/api/v1/attendance/**"
                         ).hasAnyRole("ADMIN", "ORGANIZER")
 
-                        /* ---------- PARTICIPANT ---------- */
+                        /* ---------- PARTICIPANT & COMMON ---------- */
                         .requestMatchers(
                                 "/api/v1/registrations/**",
                                 "/api/v1/teams/**",
                                 "/api/v1/user/**"
-                        ).hasAnyRole("PARTICIPANT", "ADMIN")
+                        ).hasAnyRole("PARTICIPANT", "ORGANIZER", "ADMIN")
 
                         /* ---------- EVERYTHING ELSE ---------- */
                         .anyRequest().authenticated()

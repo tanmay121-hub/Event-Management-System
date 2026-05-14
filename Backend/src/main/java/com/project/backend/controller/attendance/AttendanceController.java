@@ -34,10 +34,11 @@ public class AttendanceController {
     // Organizer/Admin: View attendance
     @GetMapping("/event/{eventId}")
     public ResponseEntity<List<AttendanceResponse>> getByEvent(
-            @PathVariable Long eventId) {
+            @PathVariable Long eventId,
+            Authentication authentication) {
 
         return ResponseEntity.ok(
-                attendanceService.getByEvent(eventId)
+                attendanceService.getByEvent(eventId, authentication.getName())
         );
     }
 }

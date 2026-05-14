@@ -6,6 +6,8 @@ import com.project.backend.repository.EventRepository;
 import com.project.backend.repository.RegistrationRepository;
 import com.project.backend.repository.TeamRepository;
 import com.project.backend.repository.UserRepository;
+import com.project.backend.exception.BadRequestException;
+import com.project.backend.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,15 +32,20 @@ public class RegistrationService {
     public void register(RegisterEventRequest request, String email) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (registrationRepository.existsByEventIdAndUserId(
                 request.getEventId(), user.getId())) {
-            throw new RuntimeException("Already registered");
+            throw new BadRequestException("Already registered for this event");
         }
 
         Event event = eventRepository.findById(request.getEventId())
-                .orElseThrow();
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
+        // LOGIC FIX: Check event status
+        if (!event.getStatus().name().equals("PUBLISHED")) {
+            throw new BadRequestException("Registration is only open for published events");
+        }
 
         Registration reg = new Registration();
 
@@ -50,7 +57,12 @@ public class RegistrationService {
         if (request.getTeamId() != null) {
             Team team = teamRepository
                     .findById(request.getTeamId())
-                    .orElseThrow();
+                    .orElseThrow(() -> new ResourceNotFoundException("Team not found"));
+
+            // LOGIC FIX: Ensure team belongs to the event
+            if (!team.getEvent().getId().equals(event.getId())) {
+                throw new BadRequestException("This team does not belong to the selected event");
+            }
 
             reg.setTeam(team);
         }

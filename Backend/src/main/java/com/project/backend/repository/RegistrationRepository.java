@@ -12,4 +12,6 @@ public interface RegistrationRepository
     boolean existsByEventIdAndUserId(Long eventId, Long userId);
 
     List<Registration> findByEventId(Long eventId);
+
+    java.util.Optional<com.project.backend.entity.Registration> findByEventIdAndUserId(Long eventId, Long userId);
 }

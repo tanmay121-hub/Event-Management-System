@@ -47,10 +47,19 @@ public class OrganizationController {
     @PostMapping("/{id}/status")
     public ResponseEntity<OrganizationResponse> updateStatus(
             @PathVariable Long id,
-            @RequestParam OrganizationStatus status) {
+            @RequestParam OrganizationStatus status,
+            Authentication authentication) {
 
         return ResponseEntity.ok(
-                organizationService.updateStatus(id, status)
+                organizationService.updateStatus(id, status, authentication.getName())
+        );
+    }
+
+    // Admin: view all (directory)
+    @GetMapping("/directory")
+    public ResponseEntity<List<OrganizationResponse>> getAll(Authentication authentication) {
+        return ResponseEntity.ok(
+                organizationService.getAll(authentication.getName())
         );
     }
 }
