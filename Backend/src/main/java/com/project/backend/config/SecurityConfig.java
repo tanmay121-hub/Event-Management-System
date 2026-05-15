@@ -87,7 +87,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/v1/auth/**",
                                 "/api/v1/events/public/**",
-                                "/api/v1/events/published"
+                                "/api/v1/events/published",
+                                "/health"
                         ).permitAll()
 
                         /* ---------- ADMIN ---------- */
