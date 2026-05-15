@@ -1,7 +1,10 @@
 import axios from "axios";
 
+//  Use environment variable for base URL
+const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/api/v1";
+
 const API = axios.create({
-  baseURL: "http://localhost:8080/api/v1",
+  baseURL: BASE_URL,
 });
 
 API.interceptors.request.use((config) => {
@@ -24,14 +27,15 @@ API.interceptors.response.use(
 
       if (refreshToken) {
         try {
-          const res = await axios.post("http://localhost:8080/api/v1/auth/refresh", {
+          // ✅ Use environment variable here too
+          const res = await axios.post(`${BASE_URL}/auth/refresh`, {
             refreshToken,
           });
 
           if (res.data.token) {
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("refreshToken", res.data.refreshToken);
-            
+
             // Retry the original request with new token
             originalRequest.headers.Authorization = `Bearer ${res.data.token}`;
             return API(originalRequest);
