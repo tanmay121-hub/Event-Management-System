@@ -65,56 +65,69 @@ export default function Dashboard() {
   );
 
   return (
-    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "20px" }}>
-      <header className="flex-between" style={{ background: "transparent", border: "none", padding: "0 0 2rem 0" }}>
+    <div className="container animate-fade">
+      <header className="flex-between" style={{ background: "transparent", border: "none", padding: "0 0 3rem 0", width: '100%', margin: 0, top: 0 }}>
         <div>
-          <h1 style={{ margin: 0 }}>Dashboard</h1>
-          <p style={{ margin: 0 }}>Manage your events and teams from one place.</p>
+          <h1 style={{ margin: 0, fontSize: '2.5rem' }}>Dashboard</h1>
+          <p style={{ margin: 0, fontSize: '1.1rem' }}>Welcome to the command center of your events.</p>
         </div>
         <div className="flex-center" style={{ gap: "15px" }}>
-           <Button variant="outline" size="sm" onClick={() => navigate("/profile")}>
-              <Settings size={16} style={{ marginRight: '8px' }} />
-              Settings
+           <Button variant="secondary" onClick={() => navigate("/profile")}>
+              <Settings size={18} />
+              <span>Settings</span>
            </Button>
         </div>
       </header>
 
       {profile && (
-        <Card className="bg-grad-primary" style={{ marginBottom: "2.5rem", maxWidth: "100%", color: 'white' }}>
+        <div className="card bg-grad-primary" style={{ marginBottom: "3rem", padding: '2.5rem' }}>
           <div className="flex-between">
-            <div>
-              <h2 style={{ color: "white", marginBottom: "0.5rem" }}>
-                Welcome back, {profile.fullName.split(' ')[0]}!
-              </h2>
-              <p style={{ color: "rgba(255,255,255,0.8)", margin: 0 }}>{profile.email}</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+              <div style={{ 
+                width: '64px', height: '64px', borderRadius: '50%', 
+                background: 'rgba(255,255,255,0.2)', display: 'flex', 
+                alignItems: 'center', justifyContent: 'center',
+                fontSize: '1.5rem', fontWeight: 800, color: 'white',
+                border: '2px solid rgba(255,255,255,0.4)'
+              }}>
+                {profile.fullName.charAt(0)}
+              </div>
+              <div>
+                <h2 style={{ color: "white", margin: 0, fontSize: '1.8rem' }}>
+                  Hello, {profile.fullName.split(' ')[0]}!
+                </h2>
+                <p style={{ color: "rgba(255,255,255,0.8)", margin: 0 }}>{profile.email}</p>
+              </div>
             </div>
-            <div className="badge glass" style={{ color: 'white' }}>
+            <div className="badge glass" style={{ background: 'rgba(255,255,255,0.1)', color: 'white', fontSize: '0.8rem' }}>
               {profile.role}
             </div>
           </div>
-        </Card>
+        </div>
       )}
 
-      <section style={{ marginBottom: "3.5rem" }}>
-        <h3 style={{ marginBottom: "1.5rem" }}>Quick Actions</h3>
-        <div className="grid-cols-auto" style={{ gap: "1.5rem" }}>
+      <section style={{ marginBottom: "4rem" }}>
+        <div className="flex-between" style={{ marginBottom: "2rem" }}>
+          <h3 style={{ fontSize: '1.5rem' }}>Quick Actions</h3>
+        </div>
+        <div className="grid-auto">
           {/* MANAGEMENT ZONE (Admin & Organizer) */}
           {(profile?.role === "ADMIN" || profile?.role === "ORGANIZER") && (
             <>
               <QuickAction 
                 icon={Calendar} 
-                title="Event Management" 
+                title="Events" 
                 actions={[
-                  { label: "Create New Event", path: "/create-event" },
-                  { label: "My Created Events", path: "/manage-events" }
+                  { label: "Create Event", path: "/create-event" },
+                  { label: "Manage Events", path: "/manage-events" }
                 ]} 
               />
               <QuickAction 
                 icon={Megaphone} 
                 title="Announcements" 
                 actions={[
-                  { label: "Post Update", path: "/announcements/create" },
-                  { label: "View All Updates", path: "/announcements/view" }
+                  { label: "New Update", path: "/announcements/create" },
+                  { label: "View Updates", path: "/announcements/view" }
                 ]} 
               />
             </>
@@ -125,87 +138,76 @@ export default function Dashboard() {
             icon={ClipboardCheck} 
             title="Attendance" 
             actions={[
-              { label: "Participant Check-In", path: "/checkin" },
-              { label: "My Attendance History", path: "/attendance" }
+              { label: "Check-In", path: "/checkin" },
+              { label: "History", path: "/attendance" }
             ]} 
           />
           
           <QuickAction 
             icon={Building2} 
-            title="Teams & Organizations" 
+            title="Community" 
             actions={[
-              { label: "Create or Join Team", path: "/teams/create" },
-              { label: "Browse Approved Orgs", path: "/organizations/approved" }
+              { label: "Teams", path: "/teams/create" },
+              { label: "Organizations", path: "/organizations/approved" }
             ]} 
           />
-
-          {/* ADMIN ONLY ZONE */}
-          {profile?.role === "ADMIN" && (
-            <QuickAction 
-              icon={ShieldAlert} 
-              title="Administration" 
-              actions={[
-                { label: "User Directory", path: "/admin/users" },
-                { label: "Organization Approvals", path: "/admin/organizations" },
-                { label: "System Reports", path: "/report" }
-              ]} 
-            />
-          )}
         </div>
       </section>
 
-      <section>
-        <div className="flex-between" style={{ marginBottom: "1.5rem" }}>
-          <h3 style={{ margin: 0 }}>Published Events</h3>
+      <section className="animate-fade" style={{ animationDelay: '0.2s' }}>
+        <div className="flex-between" style={{ marginBottom: "2rem" }}>
+          <h3 style={{ margin: 0, fontSize: '1.5rem' }}>Published Events</h3>
           <Button variant="ghost" size="sm" onClick={() => navigate("/events")}>
-            View All <ChevronRight size={16} />
+            Explore All <ChevronRight size={18} />
           </Button>
         </div>
 
         {events.length === 0 ? (
-          <Card className="flex-center" style={{ padding: "4rem", maxWidth: "100%", background: '#f1f5f9' }}>
+          <Card className="flex-center" style={{ padding: "5rem 2rem", background: 'rgba(255,255,255,0.02)' }}>
             <div style={{ textAlign: "center" }}>
-              <PlusCircle size={40} style={{ color: "var(--text-muted)", marginBottom: "1rem" }} />
-              <p>No active events found. Be the first to create one!</p>
-              <Button onClick={() => navigate("/create-event")}>Create New Event</Button>
+              <PlusCircle size={48} style={{ color: "var(--primary)", marginBottom: "1.5rem", opacity: 0.5 }} />
+              <p style={{ fontSize: '1.1rem' }}>No events are live yet.</p>
+              <Button variant="primary" onClick={() => navigate("/create-event")}>Host an Event</Button>
             </div>
           </Card>
         ) : (
-          <div className="grid-cols-auto">
-            {events.map((e) => (
-              <Card key={e.id} className="flex-between" style={{ maxWidth: "100%", flexDirection: "column", alignItems: "flex-start" }}>
-                <div style={{ width: "100%" }}>
-                  <div className="flex-between" style={{ marginBottom: "0.5rem" }}>
-                    <h4 style={{ margin: 0, color: "var(--primary)" }}>{e.title}</h4>
-                    <span className="badge badge-primary">#{e.id}</span>
+          <div className="grid-auto">
+            {events.map((e, index) => (
+              <Card key={e.id} className="animate-fade" style={{ animationDelay: `${0.1 * index + 0.3}s`, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ flex: 1 }}>
+                  <div className="flex-between" style={{ marginBottom: "1rem" }}>
+                    <span className="badge badge-primary">{e.organizationName}</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>ID: #{e.id}</span>
                   </div>
-                  <p style={{ fontSize: "0.9rem", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                  <h4 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>{e.title}</h4>
+                  <p style={{ fontSize: "0.95rem", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                     {e.description}
                   </p>
                 </div>
 
                 <div style={{ 
-                  marginTop: "1.5rem", 
-                  paddingTop: "1rem", 
-                  borderTop: "1px solid var(--border-color)",
-                  width: "100%",
-                  fontSize: "0.85rem"
+                  marginTop: "1rem", 
+                  paddingTop: "1.5rem", 
+                  borderTop: "1px solid var(--border-glass)",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
                 }}>
-                  <div className="flex-between" style={{ marginBottom: "5px" }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <div className="flex-between" style={{ fontSize: '0.85rem' }}>
+                    <span className="flex-center" style={{ gap: '6px', color: 'var(--text-muted)' }}>
                       <Calendar size={14} /> Start
                     </span>
-                    <strong>{new Date(e.startTime).toLocaleDateString()}</strong>
+                    <span style={{ fontWeight: 600 }}>{new Date(e.startTime).toLocaleDateString()}</span>
                   </div>
-                  <div className="flex-between">
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  <div className="flex-between" style={{ fontSize: '0.85rem' }}>
+                    <span className="flex-center" style={{ gap: '6px', color: 'var(--text-muted)' }}>
                       <Calendar size={14} /> End
                     </span>
-                    <strong>{new Date(e.endTime).toLocaleDateString()}</strong>
+                    <span style={{ fontWeight: 600 }}>{new Date(e.endTime).toLocaleDateString()}</span>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" style={{ width: "100%", marginTop: "1rem" }} onClick={() => navigate(`/events/${e.id}`)}>
-                  View Details
+                <Button variant="outline" style={{ width: "100%", marginTop: "1rem" }} onClick={() => navigate(`/events/${e.id}`)}>
+                  Details
                 </Button>
               </Card>
             ))}

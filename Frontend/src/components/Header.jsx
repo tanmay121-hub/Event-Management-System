@@ -19,28 +19,29 @@ function Header() {
   };
 
   return (
-    <header className="glass" style={{ marginBottom: '20px' }}>
+    <header className="glass" style={{ marginBottom: '40px' }}>
       <div 
         style={{ 
           display: 'flex', 
           alignItems: 'center', 
-          gap: '10px', 
+          gap: '12px', 
           cursor: 'pointer' 
         }}
         onClick={() => navigate(token ? "/dashboard" : "/")}
       >
         <div style={{ 
           background: 'var(--grad-primary)', 
-          padding: '8px', 
-          borderRadius: '10px', 
+          padding: '10px', 
+          borderRadius: '12px', 
           color: 'white',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)'
         }}>
           <CalendarDays size={24} />
         </div>
-        <h2 style={{ margin: 0, fontSize: '1.25rem', letterSpacing: '-0.02em' }}>
+        <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 800 }} className="text-grad">
           EventPulse
         </h2>
       </div>
@@ -51,7 +52,7 @@ function Header() {
             variant="ghost" 
             size="sm" 
             onClick={handleLogout}
-            style={{ color: 'var(--danger)', fontWeight: '600' }}
+            style={{ color: '#f87171', fontWeight: '600', background: 'rgba(239, 68, 68, 0.05)' }}
           >
             <LogOut size={18} style={{ marginRight: '8px' }} />
             Sign Out

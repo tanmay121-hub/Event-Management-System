@@ -7,8 +7,9 @@ import com.project.backend.repository.RegistrationRepository;
 import com.project.backend.repository.TeamRepository;
 import com.project.backend.repository.UserRepository;
 import com.project.backend.exception.BadRequestException;
-import com.project.backend.exception.ResourceNotFoundException;
+import com.project.backend.exception.*;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 
 @Service
 public class RegistrationService {
@@ -47,6 +48,11 @@ public class RegistrationService {
             throw new BadRequestException("Registration is only open for published events");
         }
 
+        // LOGIC FIX: Check registration deadline (cannot register after event starts)
+        if (LocalDateTime.now().isAfter(event.getStartTime())) {
+            throw new BadRequestException("Registration has closed as the event has already started");
+        }
+
         Registration reg = new Registration();
 
         reg.setUser(user);
@@ -67,6 +73,28 @@ public class RegistrationService {
             reg.setTeam(team);
         }
 
+        registrationRepository.save(reg);
+    }
+
+    // Approve / Reject Registration (Admin or Organizer Only)
+    public void updateStatus(Long id, RegistrationStatus status, String requesterEmail) {
+        User requester = userRepository.findByEmail(requesterEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        Registration reg = registrationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Registration not found"));
+        
+        Event event = reg.getEvent();
+
+        // LOGIC FIX: Authorization check
+        boolean isAdmin = requester.getRole().name().equals("ADMIN");
+        boolean isOrganizer = event.getOrganizer().getEmail().equals(requesterEmail);
+
+        if (!isAdmin && !isOrganizer) {
+            throw new ForbiddenException("You are not authorized to manage registrations for this event");
+        }
+
+        reg.setStatus(status);
         registrationRepository.save(reg);
     }
 }

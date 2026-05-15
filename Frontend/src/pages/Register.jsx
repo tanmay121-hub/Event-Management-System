@@ -40,42 +40,44 @@ export default function Register() {
   }
 
   return (
-    <div className="flex-center" style={{ minHeight: "90vh", padding: "20px" }}>
-      <Card className="glass" style={{ maxWidth: "500px", padding: "2.5rem" }}>
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+    <div className="flex-center animate-fade" style={{ minHeight: "90vh", padding: "20px", flexDirection: 'column' }}>
+      <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+        <h1 style={{ marginBottom: '0.5rem' }} className="text-grad">Join EventPulse</h1>
+        <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>Start your journey into the world of seamless events.</p>
+      </div>
+
+      <Card className="glass" style={{ maxWidth: "480px", padding: "3rem", width: '100%' }}>
+        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <div style={{ 
             display: "inline-flex", 
-            padding: "12px", 
+            padding: "15px", 
             background: "var(--grad-primary)", 
-            borderRadius: "15px", 
+            borderRadius: "18px", 
             color: "white",
-            marginBottom: "1rem"
+            marginBottom: "1rem",
+            boxShadow: '0 8px 20px rgba(99, 102, 241, 0.4)'
           }}>
-            <UserPlus size={32} />
+            <UserPlus size={28} />
           </div>
-          <h2 style={{ marginBottom: "0.5rem" }}>Create Account</h2>
-          <p style={{ margin: 0 }}>Join EventPulse to manage and discover events</p>
         </div>
 
         {error && (
-          <div className="badge" style={{ 
-            background: "#fee2e2", 
-            color: "#b91c1c", 
+          <div className="badge-danger" style={{ 
             padding: "12px", 
             width: "100%", 
             marginBottom: "1.5rem",
             display: "flex",
             alignItems: "center",
-            gap: "8px",
-            borderRadius: "8px",
-            textTransform: "none"
+            gap: "10px",
+            borderRadius: "10px",
+            fontSize: '0.9rem'
           }}>
             <AlertCircle size={18} />
             {error}
           </div>
         )}
 
-        <form onSubmit={handleRegister}>
+        <form onSubmit={handleRegister} style={{ background: 'transparent', border: 'none', padding: 0, boxShadow: 'none' }}>
           <InputField 
             label="Full Name"
             placeholder="John Doe"
@@ -102,31 +104,33 @@ export default function Register() {
             required
           />
 
-          <div className="input-group" style={{ marginBottom: '1.5rem' }}>
-            <label>I want to be an:</label>
+          <div className="input-group" style={{ marginBottom: '2rem' }}>
+            <label className="input-label">Select Your Role</label>
             <select 
               value={role} 
               onChange={(e) => setRole(e.target.value)}
+              className="input-field"
               style={{ marginBottom: 0 }}
             >
-              <option value="PARTICIPANT">Participant (Join Events)</option>
-              <option value="ORGANIZER">Organizer (Host Events)</option>
+              <option value="PARTICIPANT">Participant (Discover Events)</option>
+              <option value="ORGANIZER">Organizer (Create Events)</option>
             </select>
           </div>
 
           <Button 
             type="submit" 
-            style={{ width: "100%", marginTop: "1rem" }}
-            disabled={loading}
+            variant="primary"
+            style={{ width: "100%", marginTop: "1rem", height: '3.5rem', fontSize: '1.1rem' }}
+            isLoading={loading}
           >
-            {loading ? "Creating Account..." : "Create Account"}
+            {loading ? "Creating Account..." : "Join Now"}
           </Button>
         </form>
 
-        <div style={{ textAlign: "center", marginTop: "2rem", borderTop: "1px solid var(--border-color)", paddingTop: "1.5rem" }}>
-          <p style={{ margin: 0 }}>
+        <div style={{ textAlign: "center", marginTop: "2.5rem", borderTop: "1px solid var(--border-glass)", paddingTop: "2rem" }}>
+          <p style={{ margin: 0, fontSize: '0.95rem' }}>
             Already have an account?{" "}
-            <Link to="/" style={{ fontWeight: "600" }}>
+            <Link to="/" className="text-grad" style={{ fontWeight: "700" }}>
               Sign In
             </Link>
           </p>

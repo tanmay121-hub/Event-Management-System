@@ -14,8 +14,8 @@ public class EventResponse {
     private String description;
     private String status;
 
-    private Date startTime;
-    private Date endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     private String organizationName;
     private String organizerEmail;

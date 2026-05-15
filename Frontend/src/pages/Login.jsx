@@ -35,50 +35,51 @@ export default function Login() {
   }
 
   return (
-    <div className="flex-center" style={{ minHeight: "80vh", padding: "20px" }}>
-      <Card className="glass" style={{ maxWidth: "450px", padding: "2.5rem" }}>
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+    <div className="flex-center animate-fade" style={{ minHeight: "85vh", padding: "20px", flexDirection: 'column' }}>
+      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <h1 style={{ marginBottom: '0.5rem' }} className="text-grad">Welcome Back</h1>
+        <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)' }}>Securely access your event management dashboard.</p>
+      </div>
+
+      <Card className="glass" style={{ maxWidth: "420px", padding: "3rem", width: '100%' }}>
+        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
           <div style={{ 
             display: "inline-flex", 
-            padding: "12px", 
+            padding: "15px", 
             background: "var(--grad-primary)", 
-            borderRadius: "15px", 
+            borderRadius: "18px", 
             color: "white",
-            marginBottom: "1rem"
+            marginBottom: "1rem",
+            boxShadow: '0 8px 20px rgba(99, 102, 241, 0.4)'
           }}>
-            <LogIn size={32} />
+            <LogIn size={28} />
           </div>
-          <h2 style={{ marginBottom: "0.5rem" }}>Welcome Back</h2>
-          <p style={{ margin: 0 }}>Enter your credentials to access your account</p>
         </div>
 
         {error && (
-          <div className="badge" style={{ 
-            background: "#fee2e2", 
-            color: "#b91c1c", 
+          <div className="badge-danger" style={{ 
             padding: "12px", 
             width: "100%", 
             marginBottom: "1.5rem",
             display: "flex",
             alignItems: "center",
-            gap: "8px",
-            borderRadius: "8px",
-            textTransform: "none"
+            gap: "10px",
+            borderRadius: "10px",
+            fontSize: '0.9rem'
           }}>
             <AlertCircle size={18} />
             {error}
           </div>
         )}
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} style={{ background: 'transparent', border: 'none', padding: 0, boxShadow: 'none' }}>
           <InputField 
             label="Email Address"
             type="email"
-            placeholder="name@company.com"
+            placeholder="name@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            autoComplete="email"
           />
           
           <InputField 
@@ -88,22 +89,22 @@ export default function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            autoComplete="current-password"
           />
 
           <Button 
             type="submit" 
-            style={{ width: "100%", marginTop: "1rem" }}
-            disabled={loading}
+            variant="primary"
+            style={{ width: "100%", marginTop: "1rem", height: '3.5rem', fontSize: '1.1rem' }}
+            isLoading={loading}
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? "Authenticating..." : "Sign In"}
           </Button>
         </form>
 
-        <div style={{ textAlign: "center", marginTop: "2rem", borderTop: "1px solid var(--border-color)", paddingTop: "1.5rem" }}>
-          <p style={{ margin: 0 }}>
-            Don't have an account?{" "}
-            <Link to="/register" style={{ fontWeight: "600" }}>
+        <div style={{ textAlign: "center", marginTop: "2.5rem", borderTop: "1px solid var(--border-glass)", paddingTop: "2rem" }}>
+          <p style={{ margin: 0, fontSize: '0.95rem' }}>
+            New to EventPulse?{" "}
+            <Link to="/register" className="text-grad" style={{ fontWeight: "700" }}>
               Create Account
             </Link>
           </p>

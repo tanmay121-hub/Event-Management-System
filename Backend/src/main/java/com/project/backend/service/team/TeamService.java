@@ -150,7 +150,8 @@ public class TeamService {
             mailSender.send(message);
 
         } catch (Exception e) {
-            throw new RuntimeException("Failed to send email", e);
+            // LOGIC FIX: Do not fail the whole transaction if email fails
+            System.err.println("Failed to send team creation email: " + e.getMessage());
         }
 
         memberRepository.save(member);

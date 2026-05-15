@@ -8,6 +8,8 @@ import com.project.backend.entity.User;
 import com.project.backend.repository.EventRepository;
 import com.project.backend.repository.RegistrationRepository;
 import com.project.backend.repository.UserRepository;
+import com.project.backend.service.registration.RegistrationService;
+import com.project.backend.exception.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +21,16 @@ public class AdminService {
     private final UserRepository userRepository;
     private final RegistrationRepository registrationRepository;
     private final EventRepository eventRepository;
+    private final RegistrationService registrationService;
 
     public AdminService(UserRepository userRepository,
                         RegistrationRepository registrationRepository,
-                        EventRepository eventRepository) {
+                        EventRepository eventRepository,
+                        RegistrationService registrationService) {
         this.userRepository = userRepository;
         this.registrationRepository = registrationRepository;
         this.eventRepository = eventRepository;
+        this.registrationService = registrationService;
     }
 
     // Get All Users
@@ -45,13 +50,16 @@ public class AdminService {
     }
 
     // Enable / Disable User
-    public void updateUserStatus(Long userId, boolean enabled) {
-
+    public void updateUserStatus(Long userId, boolean enabled, String adminEmail) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // LOGIC FIX: Prevent admin from disabling themselves
+        if (user.getEmail().equals(adminEmail) && !enabled) {
+            throw new BadRequestException("You cannot disable your own administrator account");
+        }
 
         user.setEnabled(enabled);
-
         userRepository.save(user);
     }
 
@@ -70,16 +78,9 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
-    // Approve / Reject Registration
-    public void updateRegistrationStatus(Long regId,
-                                         RegistrationStatus status) {
-
-        Registration reg = registrationRepository.findById(regId)
-                .orElseThrow(() -> new RuntimeException("Registration not found"));
-
-        reg.setStatus(status);
-
-        registrationRepository.save(reg);
+    // Approve / Reject Registration (Admin Only endpoint calls Service)
+    public void updateRegistrationStatus(Long regId, RegistrationStatus status, String adminEmail) {
+        registrationService.updateStatus(regId, status, adminEmail);
     }
 
     // Basic Report: Total Events

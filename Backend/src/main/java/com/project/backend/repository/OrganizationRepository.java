@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
 
-    List<Organization> findByStatus(OrganizationStatus status);
+    List<Organization> findByStatusAndDeletedFalse(OrganizationStatus status);
 
     boolean existsByName(String name);
 }

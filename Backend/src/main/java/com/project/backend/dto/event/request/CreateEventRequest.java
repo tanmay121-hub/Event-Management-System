@@ -14,7 +14,7 @@ public class CreateEventRequest {
 
     private String title;
     private String description;
-    private Date startTime;
-    private Date endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private Long organizationId;
 }

@@ -30,10 +30,10 @@ public class Event {
     private EventStatus status;
 
     @Column(nullable = false)
-    private Date startTime;
+    private LocalDateTime startTime;
 
     @Column(nullable = false)
-    private Date endTime;
+    private LocalDateTime endTime;
 
     // Organization
     @ManyToOne(fetch = FetchType.LAZY)

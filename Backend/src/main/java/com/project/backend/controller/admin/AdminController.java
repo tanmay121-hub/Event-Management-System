@@ -30,9 +30,10 @@ public class AdminController {
     @PostMapping("/users/{id}/status")
     public ResponseEntity<String> updateUserStatus(
             @PathVariable Long id,
-            @RequestParam boolean enabled) {
+            @RequestParam boolean enabled,
+            org.springframework.security.core.Authentication auth) {
 
-        adminService.updateUserStatus(id, enabled);
+        adminService.updateUserStatus(id, enabled, auth.getName());
 
         return ResponseEntity.ok("User status updated");
     }
@@ -49,9 +50,10 @@ public class AdminController {
     @PostMapping("/registrations/{id}/status")
     public ResponseEntity<String> updateRegistrationStatus(
             @PathVariable Long id,
-            @RequestParam RegistrationStatus status) {
+            @RequestParam RegistrationStatus status,
+            org.springframework.security.core.Authentication auth) {
 
-        adminService.updateRegistrationStatus(id, status);
+        adminService.updateRegistrationStatus(id, status, auth.getName());
 
         return ResponseEntity.ok("Registration status updated");
     }

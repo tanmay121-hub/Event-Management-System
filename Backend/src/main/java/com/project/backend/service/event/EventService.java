@@ -49,7 +49,7 @@ public class EventService {
         // If there's an ownership relation, we should check it here.
 
         // LOGIC FIX: Date validation
-        if (request.getStartTime().after(request.getEndTime())) {
+        if (request.getStartTime().isAfter(request.getEndTime())) {
             throw new BadRequestException("Start time must be before end time");
         }
 
@@ -97,17 +97,16 @@ public class EventService {
         return mapToResponse(event);
     }
     public List<EventResponse> getAll() {
-
         return eventRepository.findAll()
                 .stream()
+                .filter(e -> !e.isDeleted()) // Extra safety check
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
     // Public: List Published Events
     public List<EventResponse> getPublished() {
-
-        return eventRepository.findByStatus(EventStatus.PUBLISHED)
+        return eventRepository.findByStatusAndDeletedFalse(EventStatus.PUBLISHED)
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());

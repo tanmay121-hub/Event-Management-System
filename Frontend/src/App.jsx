@@ -9,6 +9,9 @@ import JoinTeam from "./pages/JoinTeam";
 import CreateOrganization from "./pages/CreateOrganization";
 import ApprovedOrganizations from "./pages/ApprovedOrganizations";
 import AdminOrganizations from "./pages/AdminOrganizations";
+import EventList from "./pages/EventList";
+import EventDetails from "./pages/EventDetails";
+import Profile from "./pages/Profile";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
@@ -41,6 +44,9 @@ export default function App() {
           element={<ApprovedOrganizations />}
         />
         <Route path="/admin/organizations" element={<AdminOrganizations />} />
+        <Route path="/events" element={<EventList />} />
+        <Route path="/events/:id" element={<EventDetails />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );

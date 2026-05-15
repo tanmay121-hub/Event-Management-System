@@ -11,7 +11,7 @@ import com.project.backend.repository.UserRepository;
 import com.project.backend.repository.RegistrationRepository;
 import com.project.backend.exception.*;
 import org.springframework.stereotype.Service;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,8 +48,8 @@ public class AttendanceService {
         }
 
         // LOGIC FIX: Check if check-in is within event time
-        Date now = new Date();
-        if (now.before(event.getStartTime()) || now.after(event.getEndTime())) {
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(event.getStartTime()) || now.isAfter(event.getEndTime())) {
             throw new BadRequestException("Check-in is only allowed during event hours");
         }
 

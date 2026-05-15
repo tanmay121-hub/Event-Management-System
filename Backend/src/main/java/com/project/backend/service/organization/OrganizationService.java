@@ -77,7 +77,7 @@ public class OrganizationService {
     // Get Approved Organizations
     public List<OrganizationResponse> getApproved() {
         return organizationRepository
-                .findByStatus(OrganizationStatus.APPROVED)
+                .findByStatusAndDeletedFalse(OrganizationStatus.APPROVED)
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -94,6 +94,7 @@ public class OrganizationService {
 
         return organizationRepository.findAll()
                 .stream()
+                .filter(o -> !o.isDeleted())
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
